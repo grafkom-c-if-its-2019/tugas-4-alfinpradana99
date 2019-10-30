@@ -49,11 +49,11 @@
 
         gl.useProgram(program);
         drawtriangle();
-        gl.drawArrays(gl.TRIANGLE_FAN,0,9);
+        gl.drawArrays(gl.TRIANGLE_FAN,0,7);
 
         gl.useProgram(program2);
         drawtriangle2();
-        gl.drawArrays(gl.TRIANGLE_STRIP,0,4);
+        gl.drawArrays(gl.TRIANGLE_STRIP,0,3);
 
         gl.useProgram(program3);
         thetaCube = [10, 10, 0];
@@ -197,7 +197,7 @@
         );
         gl.vertexAttribPointer(vColor, 3, gl.FLOAT, gl.FALSE,
           5 * Float32Array.BYTES_PER_ELEMENT, 2 * Float32Array.BYTES_PER_ELEMENT);
-          
+
           if(trans1[0] >= 0.4*0.8 || trans1[0] <= -0.3*0.8 ){
             X1 *= -1;
           }
