@@ -73,7 +73,7 @@
         scale1 = scale1 + (membesar1 * 0.0191);
         gl.uniform1f(scaleLoc1,scale1);
         gl.drawArrays(gl.TRIANGLE_STRIP,0,4);
-        
+
         drawcube();
         
         requestAnimationFrame(render);
@@ -173,6 +173,27 @@
             -0.3,  -0.8,  -0.6,     255,255, 255,            
             -0.3,  0.6,  -0.6,      255,255, 255             
       ];
+      
+      var cubeVertexBufferObject = gl.createBuffer();
+      gl.bindBuffer(gl.ARRAY_BUFFER, cubeVertexBufferObject);
+      gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(cubeVertices), gl.STATIC_DRAW);
+
+      var vPosition = gl.getAttribLocation(program3,'vPosition');
+      var vColor = gl.getAttribLocation(program3,'vColor');
+      gl.vertexAttribPointer(
+        vPosition,                          // variable yang memegang posisi atrbute di shader
+        3,                                  // jumlah elemen per attribute
+        gl.FLOAT,                           // tipe data attribut
+        gl.FALSE,                           // default
+        6 * Float32Array.BYTES_PER_ELEMENT, // ukuran byte tiap vertex
+        0                                   // offset dari posisi elemen di array
+      );
+      gl.vertexAttribPointer(vColor, 3, gl.FLOAT, gl.FALSE,
+        6 * Float32Array.BYTES_PER_ELEMENT, 3 * Float32Array.BYTES_PER_ELEMENT);
+
+      gl.enableVertexAttribArray(vPosition);
+      gl.enableVertexAttribArray(vColor);
+    }
 
       function drawtriangle(){
         var triangleVertices = [
@@ -247,4 +268,3 @@
     }
   
   })(window || this);
-  
