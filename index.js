@@ -16,14 +16,10 @@
       // Initialize the shaders and program
       var vertexShader = glUtils.getShader(gl, gl.VERTEX_SHADER, glUtils.SL.Shaders.v1.vertex),
           vertexShader2 = glUtils.getShader(gl, gl.VERTEX_SHADER, glUtils.SL.Shaders.v2.vertex),
-          vertexShader3 = glUtils.getShader(gl, gl.VERTEX_SHADER, glUtils.SL.Shaders.v3.vertex),
-          vertexShader4 = glUtils.getShader(gl, gl.VERTEX_SHADER, glUtils.SL.Shaders.v4.vertex),
           fragmentShader = glUtils.getShader(gl, gl.FRAGMENT_SHADER, glUtils.SL.Shaders.v1.fragment);
   
       program = glUtils.createProgram(gl, vertexShader, fragmentShader);
       program2 = glUtils.createProgram(gl, vertexShader2, fragmentShader);
-      program3 = glUtils.createProgram(gl, vertexShader3, fragmentShader);
-      program4 = glUtils.createProgram(gl, vertexShader4, fragmentShader);
  
       // untuk huruf pertama
       var thetaLoc = gl.getUniformLocation(program, 'theta');
