@@ -49,11 +49,11 @@
 
         gl.useProgram(program);
         drawtriangle();
-        gl.drawArrays(gl.TRIANGLE_FAN,0,7);
+        gl.drawArrays(gl.TRIANGLE_FAN,0,9);
 
         gl.useProgram(program2);
         drawtriangle2();
-        gl.drawArrays(gl.TRIANGLE_STRIP,0,3);
+        gl.drawArrays(gl.TRIANGLE_STRIP,0,4);
 
         gl.useProgram(program3);
         thetaCube = [10, 10, 0];
