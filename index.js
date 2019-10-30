@@ -49,7 +49,7 @@
 
         gl.useProgram(program);
         drawtriangle();
-        gl.drawArrays(gl.TRIANGLE_FAN,0,9);
+        gl.drawArrays(gl.TRIANGLE_STRIP,0,9);
 
         gl.useProgram(program2);
         drawtriangle2();
