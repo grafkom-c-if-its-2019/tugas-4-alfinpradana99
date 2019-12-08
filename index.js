@@ -1,41 +1,35 @@
-(function() {
-  var canvas = document.getElementById("glcanvas");
-  var gl = glUtils.checkWebGL(canvas);
-  var program,program2,program3;
+var gerakdua = [0.0, 0.0, 0.0];
+var xAdder = 0.02;
+var yAdder = 0.03;
+var zAdder = 0.04;
 
-  glUtils.SL.init({ callback:function() { main(); } });
 
+(function(global) {
+  var canvas, gl;
+  var program, program2;
+  glUtils.SL.init({ callback: function() { main(); } });
+  
   function main() {
-      // Register Callbacks
-      window.addEventListener('resize', resizer);
-
       canvas = document.getElementById("glcanvas");
       gl = glUtils.checkWebGL(canvas);
+      // Register Callbacks
+      window.addEventListener('resize', resizer);
   
-      // Initialize the shaders and program
-      var vertexShader = glUtils.getShader(gl, gl.VERTEX_SHADER, glUtils.SL.Shaders.v1.vertex),
-          vertexShader2 = glUtils.getShader(gl, gl.VERTEX_SHADER, glUtils.SL.Shaders.v2.vertex),
-          vertexShader3 = glUtils.getShader(gl, gl.VERTEX_SHADER, glUtils.SL.Shaders.v3.vertex), // for the cube
-          fragmentShader = glUtils.getShader(gl, gl.FRAGMENT_SHADER, glUtils.SL.Shaders.v1.fragment);
+      // huruf bercahaya
+      var vertexShader = glUtils.getShader(gl, gl.VERTEX_SHADER, glUtils.SL.Shaders.v1.vertex);
+      var fragmentShader = glUtils.getShader(gl, gl.FRAGMENT_SHADER, glUtils.SL.Shaders.v1.fragment);
+      // kubus tekstur
+      var vertexShader2 = glUtils.getShader(gl, gl.VERTEX_SHADER, glUtils.SL.Shaders.v2.vertex);
+      var fragmentShader2 = glUtils.getShader(gl, gl.FRAGMENT_SHADER, glUtils.SL.Shaders.v2.fragment);
  
-      //untuk huruf A
       program = glUtils.createProgram(gl, vertexShader, fragmentShader);
-      var thetaLoc = gl.getUniformLocation(program, 'theta'); 
-      var transLoc = gl.getUniformLocation(program, 'trans');
-      var thetaA = [10, 20, 0];
-      var trans = [0, 0, 0]; 
-      var X = 0.0080;
-      var Y = 0.0090;
-      var Z = 0.0130;
+      program2 = glUtils.createProgram(gl, vertexShader2, fragmentShader2);
 
-      program2 = glUtils.createProgram(gl, vertexShader2, fragmentShader);
-      var thetaLoc1 = gl.getUniformLocation(program2, 'theta1'); 
-      var transLoc1 = gl.getUniformLocation(program2, 'trans1');
-      var thetaA1 = [10, 20, 0];
-      var trans1 = [0, 0, 0]; 
-      var X1 = 0.0080;
-      var Y1 = 0.0090;
-      var Z1 = 0.0130;
+      var theta = [0.0, 0.0, 0.0];
+      var axis = 0;
+      var xAxis = 0;
+      var yAxis = 1;
+      var zAxis = 2;
 
       // untuk cubenya
       program3 = glUtils.createProgram(gl, vertexShader3, fragmentShader);
