@@ -125,7 +125,7 @@ var zAdder = 0.04;
          -0.5,  0.5,  0.5,     1.0, 0.0,  0.0, 1.0, 0.0,
           0.5,  0.5,  0.5,     1.0, 1.0,  0.0, 1.0, 0.0
         ];
-
+        
       function render(){
         gl.clearColor(0, 0, 0, 1);
         gl.colorMask(true,true,true,true);
@@ -186,21 +186,31 @@ var zAdder = 0.04;
       gl.bindBuffer(gl.ARRAY_BUFFER, cubeVertexBufferObject);
       gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(cubeVertices), gl.STATIC_DRAW);
 
-      var vPosition = gl.getAttribLocation(program3,'vPosition');
-      var vColor = gl.getAttribLocation(program3,'vColor');
+
+      var vPosition = gl.getAttribLocation(program2, 'vPosition');
+      var vTexCoord = gl.getAttribLocation(program2, 'vTexCoord');
+      var vNormal = gl.getAttribLocation(program2, 'vNormal');
+
+      
       gl.vertexAttribPointer(
-        vPosition,                          // variable yang memegang posisi atrbute di shader
-        3,                                  // jumlah elemen per attribute
-        gl.FLOAT,                           // tipe data attribut
-        gl.FALSE,                           // default
-        6 * Float32Array.BYTES_PER_ELEMENT, // ukuran byte tiap vertex
+        vPosition,  // variabel yang memegang posisi attribute di shader
+        3,          // jumlah elemen per attribute
+        gl.FLOAT,   // tipe data atribut
+        gl.FALSE,
+        8 * Float32Array.BYTES_PER_ELEMENT, // ukuran byte tiap verteks 
         0                                   // offset dari posisi elemen di array
       );
-      gl.vertexAttribPointer(vColor, 3, gl.FLOAT, gl.FALSE,
-        6 * Float32Array.BYTES_PER_ELEMENT, 3 * Float32Array.BYTES_PER_ELEMENT);
+
+      gl.vertexAttribPointer(vTexCoord, 2, gl.FLOAT, gl.FALSE, 
+        8 * Float32Array.BYTES_PER_ELEMENT, 3 * Float32Array.BYTES_PER_ELEMENT);
+      gl.vertexAttribPointer(vNormal, 3, gl.FLOAT, gl.FALSE, 
+        8 * Float32Array.BYTES_PER_ELEMENT, 5 * Float32Array.BYTES_PER_ELEMENT);
 
       gl.enableVertexAttribArray(vPosition);
-      gl.enableVertexAttribArray(vColor);
+      gl.enableVertexAttribArray(vTexCoord);
+      gl.enableVertexAttribArray(vNormal);
+
+      
     }
 
       function drawtriangle(){
