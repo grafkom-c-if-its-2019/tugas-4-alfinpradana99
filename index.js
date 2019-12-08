@@ -210,7 +210,80 @@ var zAdder = 0.04;
       gl.enableVertexAttribArray(vTexCoord);
       gl.enableVertexAttribArray(vNormal);
 
-      
+      gl.vertexAttribPointer(
+        vPosition,  // variabel yang memegang posisi attribute di shader
+        3,          // jumlah elemen per attribute
+        gl.FLOAT,   // tipe data atribut
+        gl.FALSE,
+        8 * Float32Array.BYTES_PER_ELEMENT, // ukuran byte tiap verteks 
+        0                                   // offset dari posisi elemen di array
+      );
+
+      gl.vertexAttribPointer(vTexCoord, 2, gl.FLOAT, gl.FALSE, 
+        8 * Float32Array.BYTES_PER_ELEMENT, 3 * Float32Array.BYTES_PER_ELEMENT);
+      gl.vertexAttribPointer(vNormal, 3, gl.FLOAT, gl.FALSE, 
+        8 * Float32Array.BYTES_PER_ELEMENT, 5 * Float32Array.BYTES_PER_ELEMENT);
+
+      gl.enableVertexAttribArray(vPosition);
+      gl.enableVertexAttribArray(vTexCoord);
+      gl.enableVertexAttribArray(vNormal);
+
+      var lightColorLoc = gl.getUniformLocation(program2, 'lightColor');
+      var lightPositionLoc = gl.getUniformLocation(program2, 'lightPosition');
+      var ambientColorLoc = gl.getUniformLocation(program2, 'ambientColor');
+      var lightColor = [2., 2., 2.];
+
+      var shine = gl.getUniformLocation(program2,'shininess');
+      var s = 0.05;
+
+      var lightPosition = [0 + gerakdua[0] ,0 + gerakdua[1] ,0 + gerakdua[2]];
+      var ambientColor = glMatrix.vec3.fromValues(0.17, 0.41, 0.91);
+      gl.uniform3fv(lightColorLoc, lightColor);
+      gl.uniform3fv(lightPositionLoc, lightPosition);
+      gl.uniform3fv(ambientColorLoc, ambientColor);
+      gl.uniform1f(shine, s);
+
+      var nmLoc = gl.getUniformLocation(program2, 'normalMatrix');
+
+      var vmLoc = gl.getUniformLocation(program2, 'view');
+      var pmLoc = gl.getUniformLocation(program2, 'projection');
+      var mmLoc = gl.getUniformLocation(program2, 'model');
+      var vm = glMatrix.mat4.create();
+      var pm = glMatrix.mat4.create();
+
+      glMatrix.mat4.lookAt(vm,
+        glMatrix.vec3.fromValues(0.0, 0.0, 1.5),
+        glMatrix.vec3.fromValues(0.0, 0.0, 0.0),
+        glMatrix.vec3.fromValues(0.0, 1.0, 0.0)
+      );
+
+      var fovy = glMatrix.glMatrix.toRadian(90.0);
+      var aspect = canvas.width / canvas.height;
+      var near = 0.1;
+      var far = 10.0;
+      glMatrix.mat4.perspective(pm,
+        fovy,
+        aspect,
+        near,
+        far
+      );
+
+      gl.uniformMatrix4fv(vmLoc, false, vm);
+      gl.uniformMatrix4fv(pmLoc, false, pm);
+
+      // theta[axis] += glMatrix.glMatrix.toRadian(0.5);  // dalam derajat
+      var mm = glMatrix.mat4.create();
+      glMatrix.mat4.translate(mm, mm, [0.0, 0.0, -0.2]);
+      glMatrix.mat4.rotateX(mm, mm, theta[xAxis]);
+      glMatrix.mat4.rotateY(mm, mm, theta[yAxis]);
+      glMatrix.mat4.rotateZ(mm, mm, theta[zAxis]);
+      gl.uniformMatrix4fv(mmLoc, false, mm);
+
+      // Perhitungan modelMatrix untuk vektor normal
+      var nm = glMatrix.mat3.create();
+      glMatrix.mat3.normalFromMat4(nm, mm);
+      gl.uniformMatrix3fv(nmLoc, false, nm);
+
     }
 
       function drawtriangle(){
