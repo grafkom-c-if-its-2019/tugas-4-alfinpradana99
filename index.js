@@ -31,10 +31,100 @@ var zAdder = 0.04;
       var yAxis = 1;
       var zAxis = 2;
 
-      // untuk cubenya
-      program3 = glUtils.createProgram(gl, vertexShader3, fragmentShader);
-      var thetaLocCube = gl.getUniformLocation(program3, 'theta');
-      var thetaCube;
+      function listener(){
+        function onKeyPress(event) {
+          if (event.keyCode == 88 || event.keyCode == 120) {
+            axis = xAxis;
+          } else if (event.keyCode == 89 || event.keyCode == 121) {
+            axis = yAxis;
+          } else if (event.keyCode == 90 || event.keyCode == 122) {
+            axis = zAxis;
+          }
+        }
+        document.addEventListener('keypress', onKeyPress);
+    
+        var lastX, lastY;
+        function onMouseDown(event){
+          var x = event.clientX;
+          var y = event.clientY;
+          var rect = event.target.getBoundingClientRect();
+          if (rect.left <= x &&
+              rect.right > x &&
+              rect.top <= y &&
+              rect.bottom > y) {
+                lastX = x;
+                lastY = y;
+                dragging = true;
+          }
+        }
+        function onMouseUp(event) {
+          dragging = false;
+        }
+        function onMouseMove(event) {
+          var x = event.clientX;
+          var y = event.clientY;
+          if (dragging) {
+            var factor = 5 / canvas.height;
+            var dx = factor * (x-lastX);
+            var dy = factor * (y-lastY);
+            theta[yAxis] += dx;
+            theta[xAxis] += dy;
+          }
+          lastX = x;
+          lastY = y;
+        }
+        document.addEventListener('mousedown',onMouseDown);
+        document.addEventListener('mouseup',onMouseUp);
+        document.addEventListener('mousemove',onMouseMove);
+      }
+
+      function cube(){
+        gl.useProgram(program2);
+        var cubeVertices = [
+          // x, y, z            u, v         normal
+    
+          // -0.5,  0.5,  0.5,     0.0, 1.0,  0.0, 0.0, 1.0, // depan, merah, BAD BDC
+          // -0.5, -0.5,  0.5,     0.0, 0.0,  0.0, 0.0, 1.0, 
+          //  0.5, -0.5,  0.5,     1.0, 0.0,  0.0, 0.0, 1.0, 
+          // -0.5,  0.5,  0.5,     0.0, 1.0,  0.0, 0.0, 1.0, 
+          //  0.5, -0.5,  0.5,     1.0, 0.0,  0.0, 0.0, 1.0, 
+          //  0.5,  0.5,  0.5,     1.0, 1.0,  0.0, 0.0, 1.0, 
+    
+          0.5,  0.5,  0.5,     0.0, 1.0,  1.0, 0.0, 0.0, // kanan, hijau, CDH CHG
+          0.5, -0.5,  0.5,     0.0, 0.0,  1.0, 0.0, 0.0,
+          0.5, -0.5, -0.5,     0.2, 0.0,  1.0, 0.0, 0.0,
+          0.5,  0.5,  0.5,     0.0, 1.0,  1.0, 0.0, 0.0,
+          0.5, -0.5, -0.5,     0.2, 0.0,  1.0, 0.0, 0.0,
+          0.5,  0.5, -0.5,     0.2, 1.0,  1.0, 0.0, 0.0,
+   
+          0.5, -0.5,  0.5,     0.2, 1.0,  0.0, -1.0, 0.0, // bawah, biru, DAE DEH
+         -0.5, -0.5,  0.5,     0.2, 0.0,  0.0, -1.0, 0.0,
+         -0.5, -0.5, -0.5,     0.4, 0.0,  0.0, -1.0, 0.0,
+          0.5, -0.5,  0.5,     0.2, 1.0,  0.0, -1.0, 0.0,
+         -0.5, -0.5, -0.5,     0.4, 0.0,  0.0, -1.0, 0.0,
+          0.5, -0.5, -0.5,     0.4, 1.0,  0.0, -1.0, 0.0,
+   
+         -0.5, -0.5, -0.5,     0.4, 1.0,  0.0, 0.0, -1.0, // belakang, kuning, EFG EGH
+         -0.5,  0.5, -0.5,     0.4, 0.0,  0.0, 0.0, -1.0,
+          0.5,  0.5, -0.5,     0.6, 0.0,  0.0, 0.0, -1.0,
+         -0.5, -0.5, -0.5,     0.4, 1.0,  0.0, 0.0, -1.0,
+          0.5,  0.5, -0.5,     0.6, 0.0,  0.0, 0.0, -1.0,
+          0.5, -0.5, -0.5,     0.6, 1.0,  0.0, 0.0, -1.0,
+   
+         -0.5,  0.5, -0.5,     0.6, 1.0,  -1.0, 0.0, 0.0, // kiri, cyan, FEA FAB
+         -0.5, -0.5, -0.5,     0.6, 0.0,  -1.0, 0.0, 0.0,
+         -0.5, -0.5,  0.5,     0.8, 0.0,  -1.0, 0.0, 0.0,
+         -0.5,  0.5, -0.5,     0.6, 1.0,  -1.0, 0.0, 0.0,
+         -0.5, -0.5,  0.5,     0.8, 0.0,  -1.0, 0.0, 0.0,
+         -0.5,  0.5,  0.5,     0.8, 1.0,  -1.0, 0.0, 0.0,
+   
+          0.5,  0.5, -0.5,     0.8, 1.0,  0.0, 1.0, 0.0, // atas, magenta, GFB GBC
+         -0.5,  0.5, -0.5,     0.8, 0.0,  0.0, 1.0, 0.0,
+         -0.5,  0.5,  0.5,     1.0, 0.0,  0.0, 1.0, 0.0,
+          0.5,  0.5, -0.5,     0.8, 1.0,  0.0, 1.0, 0.0,
+         -0.5,  0.5,  0.5,     1.0, 0.0,  0.0, 1.0, 0.0,
+          0.5,  0.5,  0.5,     1.0, 1.0,  0.0, 1.0, 0.0
+        ];
 
       function render(){
         gl.clearColor(0, 0, 0, 1);
