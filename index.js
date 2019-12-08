@@ -14,6 +14,7 @@ var zAdder = 0.04;
       gl = glUtils.checkWebGL(canvas);
       // Register Callbacks
       window.addEventListener('resize', resizer);
+      resizer();
   
       // huruf bercahaya
       var vertexShader = glUtils.getShader(gl, gl.VERTEX_SHADER, glUtils.SL.Shaders.v1.vertex);
@@ -315,7 +316,7 @@ var zAdder = 0.04;
         var vColor = gl.getAttribLocation(program,'vColor');
         gl.vertexAttribPointer(vPosition, 2, gl.FLOAT, false, 0, 0);
         
-        var gerak1 = gl.getUniformLocation(program, 'bounce');
+        var geraksatu = gl.getUniformLocation(program, 'bounce');
           if (gerakdua[0]  < -0.5 || gerakdua[0] > 0.5) {
               xAdder*=-1;
         }
@@ -343,9 +344,9 @@ var zAdder = 0.04;
             gl.uniform3fv(geraksatu, gerakdua);
             
 
-            if (scale >= 1) membesar = -1;
-            else if (scale <= -1) membesar = 1;
-            scale = scale + (membesar * 0.0191); 
+            if (scale >= 1) grow = -1;
+            else if (scale <= -1) grow = 1;
+            scale = scale + (grow * 0.0191); 
             gl.uniform1f(scaleLoc, scale);
 
             var lightColorLoc = gl.getUniformLocation(program, 'lightColor');
@@ -354,12 +355,10 @@ var zAdder = 0.04;
             var lightColor = [2., 2., 2.];
             var lightPosition = [0 + gerakdua[0] ,0 + gerakdua[1] ,0 + gerakdua[2]];
       
-            var shine = gl.getUniformLocation(program,'shininess'); //program nyesuain huruf atau kubus
-            var s = 0.05; //tingkat shininess
+            var shine = gl.getUniformLocation(program,'shininess'); 
+            var s = 0.05; 
       
-            // var lightPosition = [0., 0., -1.];
             var ambientColor = glMatrix.vec3.fromValues(0.17, 0.41, 0.91);
-            // var ambientColor = glMatrix.vec3.fromValues(0.6, 0.7, 0.2);
             gl.uniform3fv(lightColorLoc, lightColor);
             gl.uniform3fv(lightPositionLoc, lightPosition);
             gl.uniform3fv(ambientColorLoc, ambientColor);
@@ -371,9 +370,9 @@ var zAdder = 0.04;
             var pm = glMatrix.mat4.create();
       
             glMatrix.mat4.lookAt(vm,
-            glMatrix.vec3.fromValues(0.0, 0.0, 1.5),    // posisi kamera
-            glMatrix.vec3.fromValues(0.0, 0.0, -2.0),  // titik yang dilihat; pusat kubus akan kita pindah ke z=-2
-            glMatrix.vec3.fromValues(0.0, 1.0, 0.0)   // arah atas dari kamera
+            glMatrix.vec3.fromValues(0.0, 0.0, 1.5),    
+            glMatrix.vec3.fromValues(0.0, 0.0, -2.0),  
+            glMatrix.vec3.fromValues(0.0, 1.0, 0.0)   
             );
       
             var fovy = glMatrix.glMatrix.toRadian(90.0);
@@ -392,72 +391,67 @@ var zAdder = 0.04;
       
             
             var mmLoc = gl.getUniformLocation(program, 'model');
-            // theta[axis] += glMatrix.glMatrix.toRadian(0.5);  // dalam derajat
             var mm = glMatrix.mat4.create();
             glMatrix.mat4.translate(mm, mm, [0.0, 0.0,-0.2]);
             glMatrix.mat4.translate(mm, mm, gerakdua);
             glMatrix.mat4.scale(mm, mm, [0.2, 0.2, 0.2]);
             glMatrix.mat4.scale(mm, mm, [scale, 1.0, 1.0]);
-            // glMatrix.mat4.rotateX(mm, mm, theta[xAxis]);
-            // glMatrix.mat4.rotateY(mm, mm, theta[yAxis]);
-            // glMatrix.mat4.rotateZ(mm, mm, theta[zAxis]);
             gl.uniformMatrix4fv(mmLoc, false, mm);
-
       }
 
-      function drawtriangle2(){
-        var triangleVertices2 = [
-          0.27, 0, 0.7,1.0,0.6,
-          0.54, 0, 0.3,1.0,0.2,
-          0.31, 0.1, 0.2,0.0,1.0,
-          0.53, 0.1, 0.2,1.0,0.7
-        ];
-        var triangleVertexBufferObject = gl.createBuffer();
-        gl.bindBuffer(gl.ARRAY_BUFFER, triangleVertexBufferObject);
-        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(triangleVertices2), gl.STATIC_DRAW);
-
-        var vPosition = gl.getAttribLocation(program2,'vPosition');
-        var vColor = gl.getAttribLocation(program2,'vColor');
-        gl.vertexAttribPointer(
-          vPosition,                       
-          2,                                  // jumlah elemen per attribute
-          gl.FLOAT,                           // tipe data attribut
-          gl.FALSE,                           // default
-          5 * Float32Array.BYTES_PER_ELEMENT, // ukuran byte tiap vertex
-          0                                   // offset dari posisi elemen di array
-        );
-        gl.vertexAttribPointer(vColor, 3, gl.FLOAT, gl.FALSE,
-          5 * Float32Array.BYTES_PER_ELEMENT, 2 * Float32Array.BYTES_PER_ELEMENT);
-
-          if(trans1[0] >= 0.4*0.8 || trans1[0] <= -0.3*0.8 ){
-            X1 *= -1;
-          }
-          trans1[0] += X1;
-    
-          if(trans1[1] >= 0.6*0.8 || trans1[1] <= -0.8*0.8 ){
-            Y1 *= -1;
-          }
-          trans1[1] += Y1;
-    
-          if(trans1[2] >= 0.7*0.8 || trans1[2] <= -0.6*0.8){
-            Z1 *= -1;
-          }
-          trans1[2] += Z1;
-    
-          gl.uniform3fv(transLoc1, trans1);
-
-
-        thetaA1[1] += 0.191;
-        gl.uniform3fv(thetaLoc1, thetaA1);
-
-        gl.enableVertexAttribArray(vPosition);
-        gl.enableVertexAttribArray(vColor);
-
+      function texturePack(){      
+        // Uniform untuk tekstur
+        var sampler0Loc = gl.getUniformLocation(program2, 'sampler0');
+        gl.uniform1i(sampler0Loc, 0);
+        // Inisialisasi tekstur
+        var texture = gl.createTexture();
+        if (!texture) {
+          reject(new Error('Gagal membuat objek tekstur'));
+        }
+        gl.activeTexture(gl.TEXTURE0);
+        gl.bindTexture(gl.TEXTURE_2D, texture);
+        // Sementara warnai tekstur dengan sebuah 1x1 piksel biru
+        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 1, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE, new Uint8Array([0, 0, 255, 255]));
+        initTexture(function () {
+          render();
+        });
+  
+        // Membuat mekanisme pembacaan gambar jadi tekstur
+        function initTexture(callback, args) {
+          var imageSource = 'image/foto.jpg';
+          var promise = new Promise(function(resolve, reject) {
+            var image = new Image();
+            if (!image) {
+              reject(new Error('Gagal membuat objek gambar'));
+            }
+            image.onload = function() {
+              gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, 1);
+              gl.bindTexture(gl.TEXTURE_2D, texture);
+              gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+              gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+              gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+              gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image);
+              resolve('Sukses');
+            }
+            image.src = imageSource;
+          });
+          promise.then(function() {
+            if (callback) {
+              callback(args);
+            }
+          }, function (error) {
+            console.log('Galat pemuatan gambar', error);
+          });
+        }
       }
 
-      resizer();
-      render();
   }
+
+  var scale = 1;
+  var grow = 1;
+
+  var scaleLoc = gl.getUniformLocation(program, 'scale');
+
     function resizer() {
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
