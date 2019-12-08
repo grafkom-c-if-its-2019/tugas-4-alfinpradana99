@@ -126,30 +126,6 @@ var zAdder = 0.04;
          -0.5,  0.5,  0.5,     1.0, 0.0,  0.0, 1.0, 0.0,
           0.5,  0.5,  0.5,     1.0, 1.0,  0.0, 1.0, 0.0
         ];
-        
-      function render(){
-        gl.clearColor(0, 0, 0, 1);
-        gl.colorMask(true,true,true,true);
-        gl.clear(gl.COLOR_BUFFER_BIT);
-
-        gl.useProgram(program);
-        drawtriangle();
-        gl.drawArrays(gl.TRIANGLE_STRIP,0,9);
-
-        gl.useProgram(program2);
-        drawtriangle2();
-        gl.drawArrays(gl.TRIANGLE_STRIP,0,4);
-
-        gl.useProgram(program3);
-        thetaCube = [10, 10, 0];
-        gl.uniform3fv(thetaLocCube, thetaCube);
-
-        drawcube();
-
-        gl.drawArrays(gl.LINES,0,24);
-        
-        requestAnimationFrame(render);
-      }
 
       function drawcube(){
         var cubeVertices = [
@@ -447,10 +423,31 @@ var zAdder = 0.04;
 
   }
 
-  var scale = 1;
-  var grow = 1;
+      var scale = 1;
+      var grow = 1;
 
-  var scaleLoc = gl.getUniformLocation(program, 'scale');
+      var scaleLoc = gl.getUniformLocation(program, 'scale');
+
+      function render() {
+        // stats.update();
+        // var delta = clock.getDelta();
+      gl.clearColor(0, 0, 0.4, 1.0);
+      gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+
+      triangle();
+      gl.drawArrays(gl.TRIANGLE_STRIP, 0, 15);
+      cube();    
+      gl.drawArrays(gl.TRIANGLES, 0, 30);
+    //   trackballControls.update(delta);
+      requestAnimationFrame(render); 
+      }
+
+      gl.clearColor(0.0, 0.0, 0.0, 1.0);
+    gl.enable(gl.DEPTH_TEST);
+   
+    texturePack();
+    listener();
+  }
 
     function resizer() {
       canvas.width = window.innerWidth;
