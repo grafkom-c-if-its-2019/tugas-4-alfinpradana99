@@ -9,9 +9,10 @@ uniform sampler2D sampler0;
 
 void main() {
 
-  vec4 tex0 = texture2D(sampler0, fTexCoord);
+  vec4 tex0 = texture2D(sampler0, fTexCoord); 
   vec3 lightDirection = lightPosition - fPosition;
   lightDirection = normalize(lightDirection);
+
   vec3 normal = normalize(fNormal);
 
   float lightIntensity = max(dot(lightDirection, -normal), 0.0);
@@ -19,17 +20,17 @@ void main() {
   float specularPower = 120.0;
   float specular = 0.0;
   if (lightIntensity > 0.0){
-    // viewing vector
-    vec3 viewVec = vec3(0,0,1.0);
-    // reflective vector
+
+    vec3 viewVec = vec3(0.0, 0.251, 1.0);
+
     vec3 reflectVec = reflect(-lightDirection, normal);
-    // determine the specularFactor based on the dot product of viewing and reflective,
-    // taking at least a minimum of 0.0
+
     float specularFactor = max(dot(reflectVec, viewVec), 0.0);
     specular = pow(specularFactor, specularPower);
   }
+
   vec3 diffuse = lightColor * tex0.rgb * lightIntensity + specular;
-  // vec3 specular = 
+
   vec3 ambient = ambientColor * tex0.rgb;
 
   gl_FragColor = vec4(diffuse + ambient, 1.0);

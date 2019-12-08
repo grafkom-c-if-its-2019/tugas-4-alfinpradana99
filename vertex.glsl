@@ -37,7 +37,9 @@ void main() {
     0.0, 0.0, 0.0, 1.0
   );
 
+  // gl_Position = vec4(vPosition, 1.0) * bounce * skalasi;
   gl_Position = projection * view * model * vec4(vPosition, 1.0);
+  // urutan perkaliannya harus = projection x view x model (transformasi)
 
   fColor = vColor;
   fPosition = vec3(view * model * vec4(vPosition, 1.0));

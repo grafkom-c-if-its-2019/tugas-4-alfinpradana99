@@ -12,7 +12,7 @@ uniform mat3 normalMatrix;
 
 void main() {
   gl_Position = projection * view * model * vec4(vPosition, 1.0);
-
+  
   fTexCoord = vTexCoord;
   fPosition = vec3(view * model * vec4(vPosition, 1.0));
   fNormal = normalMatrix * vNormal;
