@@ -287,17 +287,25 @@ var zAdder = 0.04;
     }
 
       function drawtriangle(){
-        var triangleVertices = [
-          0.1, -0.3, 0.4,0.0,1.0,
-          0.4, 0.6, 0.7,1.0,0.6,
-          0.2, -0.3, 0.3,1.0,0.6,
-          0.45, 0.6, 1.0,1.0,0.0,
-          0.4, 0.4, 0.4,0.0,1.0,
-          0.5, 0.4, 2.0,1.0,0.0,
-          0.45, 0.4, 0.2,0.0,1.0,
-          0.7, -0.3, 1.0,1.0,0.0,
-          0.6, -0.3, 0.4,0.0,1.0
-        ];
+        gl.useProgram(program);
+
+            var triangleVertices = new Float32Array([
+                0.1,  0.7, 
+                0.0, -0.1,
+                -0.1, -0.1, 
+                0.2,  0.2,
+                0.05, 0.2,
+                0.0, -0.1, 
+                0.2,  0.0, 
+                0.16, 0.25,  
+                0.3, -0.1,  
+                0.2, -0.1,  
+                0.1,  0.7,  
+                0.1,  0.7,  
+                0.08, 0.5, 
+                0.2, -0.1,
+                0.2, -0.1
+              ]);
 
         var triangleVertexBufferObject = gl.createBuffer();
         gl.bindBuffer(gl.ARRAY_BUFFER, triangleVertexBufferObject);
@@ -305,40 +313,96 @@ var zAdder = 0.04;
 
         var vPosition = gl.getAttribLocation(program,'vPosition');
         var vColor = gl.getAttribLocation(program,'vColor');
-        gl.vertexAttribPointer(
-          vPosition,                          
-          2,                                  // jumlah elemen per attribute
-          gl.FLOAT,                           // tipe data attribut
-          gl.FALSE,                           // default
-          5 * Float32Array.BYTES_PER_ELEMENT, // ukuran byte tiap vertex
-          0                                   // offset dari posisi elemen di array
-        );
-        gl.vertexAttribPointer(vColor, 3, gl.FLOAT, gl.FALSE,
-          5 * Float32Array.BYTES_PER_ELEMENT, 2 * Float32Array.BYTES_PER_ELEMENT);
+        gl.vertexAttribPointer(vPosition, 2, gl.FLOAT, false, 0, 0);
+        
+        var gerak1 = gl.getUniformLocation(program, 'bounce');
+          if (gerakdua[0]  < -0.5 || gerakdua[0] > 0.5) {
+              xAdder*=-1;
+        }
 
-          if(trans[0] >= 0.4*0.8 || trans[0] <= -0.3*0.8 ){
-            X *= -1;
-          }
-          trans[0] += X;
-    
-          if(trans[1] >= 0.6*0.8 || trans[1] <= -0.8*0.8 ){
-            Y *= -1;
-          }
-          trans[1] += Y;
-    
-          if(trans[2] >= 0.7*0.8 || trans[2] <= -0.6*0.8){
-            Z *= -1;
-          }
-          trans[2] += Z;
-    
-          gl.uniform3fv(transLoc, trans);
+        gerakdua[0] += xAdder;
+            var middle_point = -0.3 + gerakdua[0];
+            var tengah = gl.getUniformLocation(program, 'tengah');
+            
+            gl.uniform1f(tengah, middle_point);
 
+            // console.log(gerakdua[0]);
 
-        thetaA[1] += 0.191;
-        gl.uniform3fv(thetaLoc, thetaA);
+            if (gerakdua[1] < -0.5 || gerakdua[1] > 0.5) {
+                yAdder*=-1;
+            }
 
-        gl.enableVertexAttribArray(vPosition);
-        gl.enableVertexAttribArray(vColor);
+            gerakdua[1] += yAdder;
+
+            if (gerakdua[2] < -0.5 || gerakdua[2] > 0.5) {
+                zAdder*=-1;
+            }
+
+            gerakdua[2] += zAdder;
+            
+            gl.uniform3fv(geraksatu, gerakdua);
+            
+
+            if (scale >= 1) membesar = -1;
+            else if (scale <= -1) membesar = 1;
+            scale = scale + (membesar * 0.0191); 
+            gl.uniform1f(scaleLoc, scale);
+
+            var lightColorLoc = gl.getUniformLocation(program, 'lightColor');
+            var lightPositionLoc = gl.getUniformLocation(program, 'lightPosition');
+            var ambientColorLoc = gl.getUniformLocation(program, 'ambientColor');
+            var lightColor = [2., 2., 2.];
+            var lightPosition = [0 + gerakdua[0] ,0 + gerakdua[1] ,0 + gerakdua[2]];
+      
+            var shine = gl.getUniformLocation(program,'shininess'); //program nyesuain huruf atau kubus
+            var s = 0.05; //tingkat shininess
+      
+            // var lightPosition = [0., 0., -1.];
+            var ambientColor = glMatrix.vec3.fromValues(0.17, 0.41, 0.91);
+            // var ambientColor = glMatrix.vec3.fromValues(0.6, 0.7, 0.2);
+            gl.uniform3fv(lightColorLoc, lightColor);
+            gl.uniform3fv(lightPositionLoc, lightPosition);
+            gl.uniform3fv(ambientColorLoc, ambientColor);
+            gl.uniform1f(shine, s);
+
+            var vmLoc = gl.getUniformLocation(program, 'view');
+            var pmLoc = gl.getUniformLocation(program, 'projection');
+            var vm = glMatrix.mat4.create();
+            var pm = glMatrix.mat4.create();
+      
+            glMatrix.mat4.lookAt(vm,
+            glMatrix.vec3.fromValues(0.0, 0.0, 1.5),    // posisi kamera
+            glMatrix.vec3.fromValues(0.0, 0.0, -2.0),  // titik yang dilihat; pusat kubus akan kita pindah ke z=-2
+            glMatrix.vec3.fromValues(0.0, 1.0, 0.0)   // arah atas dari kamera
+            );
+      
+            var fovy = glMatrix.glMatrix.toRadian(90.0);
+            var aspect = canvas.width / canvas.height;
+            var near = 0.5;
+            var far = 10.0;
+            glMatrix.mat4.perspective(pm,
+            fovy,
+            aspect,
+            near,
+            far
+            );
+      
+            gl.uniformMatrix4fv(vmLoc, false, vm);
+            gl.uniformMatrix4fv(pmLoc, false, pm);
+      
+            
+            var mmLoc = gl.getUniformLocation(program, 'model');
+            // theta[axis] += glMatrix.glMatrix.toRadian(0.5);  // dalam derajat
+            var mm = glMatrix.mat4.create();
+            glMatrix.mat4.translate(mm, mm, [0.0, 0.0,-0.2]);
+            glMatrix.mat4.translate(mm, mm, gerakdua);
+            glMatrix.mat4.scale(mm, mm, [0.2, 0.2, 0.2]);
+            glMatrix.mat4.scale(mm, mm, [scale, 1.0, 1.0]);
+            // glMatrix.mat4.rotateX(mm, mm, theta[xAxis]);
+            // glMatrix.mat4.rotateY(mm, mm, theta[yAxis]);
+            // glMatrix.mat4.rotateZ(mm, mm, theta[zAxis]);
+            gl.uniformMatrix4fv(mmLoc, false, mm);
+
       }
 
       function drawtriangle2(){
