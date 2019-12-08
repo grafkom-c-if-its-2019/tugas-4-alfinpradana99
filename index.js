@@ -394,7 +394,7 @@ var zAdder = 0.04;
   
         // Membuat mekanisme pembacaan gambar jadi tekstur
         function initTexture(callback, args) {
-          var imageSource = 'image/foto.jpg';
+          var imageSource = 'image/foto.bmp';
           var promise = new Promise(function(resolve, reject) {
             var image = new Image();
             if (!image) {

@@ -5,7 +5,6 @@ varying vec2 fTexCoord;
 uniform vec3 lightColor;
 uniform vec3 lightPosition;
 uniform vec3 ambientColor;
-
 uniform sampler2D sampler0;
 
 void main() {

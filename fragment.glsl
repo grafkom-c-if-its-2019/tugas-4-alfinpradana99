@@ -1,9 +1,7 @@
 precision mediump float;
-
 varying vec3 fColor;
 varying vec3 fNormal;
 varying vec3 fPosition;
-
 uniform vec3 lightColor;
 uniform vec3 lightPosition;
 uniform vec3 ambientColor;
