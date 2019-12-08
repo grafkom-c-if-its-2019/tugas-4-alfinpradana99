@@ -333,7 +333,7 @@ var zAdder = 0.04;
       });
 
       function initTexture(callback, args) {
-        var imageSource = 'image/foto.bmp';
+        var imageSource = 'image/foto.jpg';
         var promise = new Promise(function(resolve, reject) {
           var image = new Image();
           if (!image) {
