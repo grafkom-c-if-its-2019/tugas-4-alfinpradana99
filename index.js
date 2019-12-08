@@ -1,7 +1,7 @@
 (function() {
   var canvas = document.getElementById("glcanvas");
   var gl = glUtils.checkWebGL(canvas);
-  var program,program2,program3, program4;
+  var program,program2,program3;
 
   glUtils.SL.init({ callback:function() { main(); } });
 
